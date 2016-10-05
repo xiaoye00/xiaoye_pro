@@ -6,5 +6,9 @@ py2   learn the symoble of mathmatic
 
 py3   learn the list step1 ,about the base operation
 
+py4   for list operation
+
+py5   for list operation
+
 
 
