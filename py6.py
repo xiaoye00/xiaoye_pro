@@ -13,3 +13,11 @@ a.extend(b)
 
 print a
 
+#index methed
+
+kiights = ['We','are','the','knights','who','say','ni']
+
+print kiights.index('who')
+
+
+
