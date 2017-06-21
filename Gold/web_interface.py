@@ -17,7 +17,8 @@ class webInterface:
 
     #get web page context
     def get_context(self):
-        self.html = requests.get(self.url).text
+        self.html = requests.get(self.url)
+        self.html = self.html.text.encode(self.html.encoding)
         return self.html
 
     #do web context parse
@@ -26,12 +27,8 @@ class webInterface:
         return self.sp
 
     #look for the context in all
-    def find_context_inall(self,context):
-        return self.sp.find_all(context)
-
-    #look for the context in all
-    def find_context_inclass(self,context,strlist):
-        return self.sp.find_all(context,class_=strlist)
+    def find_context_inall(self,context,**args):
+        return self.sp.find_all(context, **args)
 
     #look for context
     def find_context(self,context,sp):
@@ -44,6 +41,9 @@ class webInterface:
     def find_in_tag(self,context,tag):
         return tag.find_all(context)
 
+
+
+
 if __name__ == '__main__':
     test_instance = webInterface('http://www.sge.com.cn/sjzx/mrhqsj')
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     sp = test_instance.context_parser()
 
-    testdata = test_instance.find_context_inall('a')
+    testdata = test_instance.find_context_inclass_too('a',class_=['title', 'fs14',  'color333', 'clear'])
 
     print ('finished')
 
