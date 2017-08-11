@@ -17,6 +17,7 @@ from matplotlib.dates import DayLocator, HourLocator, DateFormatter, drange
 from numpy import arange
 from etf_data import*
 from sina_history_price import *
+from stock_data import  *
 
 
 class AnalysisData:
@@ -608,13 +609,87 @@ class SilverHistoryRate(AnalysisData):
             self.low_rate = self.get_data('', name='最低价', date=date_scope)
             self.trading_quantity = self.get_data('', name='成交量', date=date_scope)
             # "date >= '2017-05-15'"
+
+class StockAnalysis(AnalysisData):
+    def __init__(self):
+        self.obj = StockData()
+        self.obj.update_data()
+
+    def str2data(self, args):
+        temp_list = []
+        for data in args:
+            temp_list.append(float(data[0].replace(',', '')))
+        return temp_list
+
+    def plot_data(self, date_scope):
+        self.update(date_scope)
+
+        fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, num='Stock Analysis')
+        ax1.plot(self.date_range, self.opening_rate)
+        ax1.plot(self.date_range, self.closing_rate)
+        ax1.set_title('Rate')
+
+        ax2.bar(self.date_range, self.amplitude)
+        ax2.set_title('Amplitude')
+
+        ax3.bar(self.date_range, self.amount)
+        ax3.set_title('Trading Volume')
+
+        fig.autofmt_xdate()
+        fig.subplots_adjust(hspace=0.5)
+        fig.show()
+
+    def update(self, date_scope):
+
+        if isinstance(date_scope, str) == False:
+
+            self.opening_rate = self.get_data(name='开盘价', order='asc')
+            self.closing_rate = self.get_data(name='收盘价', order='asc')
+            self.amplitude = self.get_data(name='涨跌额', order='asc')
+            self.amount = self.get_data(name='成交金额', order='asc')
+
+            date_size = date_scope + 1
+
+            orignal_date = self.get_data(name='date', order='asc')
+            self.date_range = self.conver_date(orignal_date)
+            self.date_range = self.date_range[-1:-date_size:-1]
+            self.date_range.reverse()
+
+            self.opening_rate = self.opening_rate[-1:-date_size:-1]
+            self.opening_rate.reverse()
+            self.opening_rate = self.str2data(self.opening_rate)
+
+            self.closing_rate = self.closing_rate[-1:-date_size:-1]
+            self.closing_rate.reverse()
+            self.closing_rate = self.str2data(self.closing_rate)
+
+            self.amplitude = self.amplitude[-1:-date_size:-1]
+            self.amplitude.reverse()
+            self.amplitude = self.str2data(self.amplitude)
+
+            self.amount = self.amount[-1:-date_size:-1]
+            self.amount.reverse()
+            self.amount = self.str2data(self.amount)
+
+        else:
+            orignal_date = self.get_data('', name='date', date=date_scope)
+            self.date_range = self.conver_date(orignal_date)
+            self.opening_rate = self.get_data('', name='开盘价', date=date_scope)
+            self.closing_rate = self.get_data('', name='收盘价', date=date_scope)
+            self.amplitude = self.get_data('', name='涨跌额', date=date_scope)
+            self.amount = self.get_data('', name='成交金额(元)', date=date_scope)
+
+
+
+
+
 class SilverAnalysis():
     def __init__(self):
         self.seg = SegSilverDataAnalysis()
         self.etf = ETF_SilverDataAnalysis()
         self.ctcf = CTCF_SilverDataAnalysis()
         self.obj = SilverHistoryRate()
-        # self.obj.plot_data(20)
+        self.stock = StockAnalysis()
 
 
     def plot_data(self):
@@ -630,6 +705,7 @@ class SilverAnalysis():
         #plot and update parameter
         # self.seg.plot_data(date_range)
         self.seg.plot_data(90)
+        self.stock.plot_data(60)
         self.etf.update(date_range)
         self.ctcf.update(date_range)
         self.obj.update(date_range)

@@ -34,6 +34,8 @@ class Seg_Interface(WebDataBase):
 
         #scan all links
         findOutFlag = 0
+        # query lastest date
+        lastest_date = db.query_data('date', order='desc', fetch_no='one')
         for i in range(1,19):
 
             if findOutFlag == 1:
@@ -47,8 +49,8 @@ class Seg_Interface(WebDataBase):
 
             #findOutFlag
 
-            #query lastest date
-            lastest_date = db.query_data('date', order = 'desc',fetch_no='one')
+
+
             #scan sublinks for detail data
             for rows in data:
 

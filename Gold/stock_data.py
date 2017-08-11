@@ -44,7 +44,7 @@ class StockData(WebDataBase):
         self.interval = 1
 
         #discarding the first three items
-        list_len = len(data)-self.index
+        list_len = len(data)#-self.index
 
         #gather all paga data in this loop
         while( self.index < list_len):
